@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#071426">
+<meta name="description" content="RAVIYA ACCOUNT STORE payment and customer manager">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<title>RAVIYA ACCOUNT STORE</title>
+<style>
+:root{--bg:#050b14;--panel:#0c1728;--panel2:#101f34;--line:#1c3552;--blue:#218bff;--cyan:#39c5ff;--text:#f2f7ff;--muted:#91a5bd;--red:#ff5e72;--green:#36d399;--yellow:#ffc857}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#102b4a 0,#050b14 52%);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+header{padding:24px 18px 18px;max-width:1100px;margin:auto} .brand{font-size:12px;letter-spacing:3px;color:var(--cyan);font-weight:800}.title{font-size:clamp(23px,5vw,34px);font-weight:900;line-height:1.1;margin:8px 0}.subtitle{color:var(--muted);font-size:13px}
+main{max-width:1100px;margin:auto;padding:0 16px 40px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px;margin:10px 0 20px}.card,.section{background:linear-gradient(145deg,#0e1b2d,#091321);border:1px solid var(--line);border-radius:17px;padding:16px;box-shadow:0 12px 30px #0002}.stat-label{color:var(--muted);font-size:12px}.stat-value{font-size:22px;font-weight:850;margin-top:8px;overflow-wrap:anywhere}.stat-value.red{color:var(--red)}.stat-value.green{color:var(--green)}.stat-value.blue{color:var(--cyan)}
+.toolbar{display:flex;gap:9px;flex-wrap:wrap;margin:0 0 15px}.btn{border:1px solid var(--line);border-radius:11px;padding:11px 14px;color:var(--text);background:#12243a;font-weight:750;cursor:pointer}.btn.primary{background:linear-gradient(100deg,#1677e8,#1da8e8);border:0}.btn.danger{color:#ff9ca8;border-color:#713544;background:#291522}.btn.small{padding:7px 10px;font-size:12px}.section{margin-bottom:16px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:13px}.section h2{font-size:17px;margin:0}.fieldgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:12px;color:var(--muted)}input,select,textarea{width:100%;border:1px solid #25405f;background:#07111f;color:var(--text);border-radius:10px;padding:12px;font:inherit;outline:none}input:focus,select:focus,textarea:focus{border-color:var(--cyan)}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:13px}.searchrow{display:flex;gap:10px;margin-bottom:12px}.searchrow input{flex:1}.customer{border:1px solid var(--line);background:#0a1524;border-radius:14px;padding:14px;margin:10px 0}.customer-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.customer-name{font-size:16px;font-weight:850}.muted{color:var(--muted);font-size:12px;margin-top:4px}.badge{display:inline-block;border-radius:999px;padding:5px 8px;font-size:11px;font-weight:800;white-space:nowrap}.badge.pending{background:#3a2028;color:#ff9ca8}.badge.paid{background:#12352e;color:#70edc0}.moneygrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:12px 0}.moneybox{background:#101f32;border-radius:9px;padding:9px}.moneybox span{display:block;color:var(--muted);font-size:10px}.moneybox strong{display:block;font-size:13px;margin-top:4px;overflow-wrap:anywhere}.empty{text-align:center;color:var(--muted);padding:25px 10px}.note{color:var(--muted);font-size:12px;line-height:1.5}.hidden{display:none!important}footer{text-align:center;color:#71869f;font-size:11px;padding:15px}.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#163c5b;border:1px solid #2c82b7;color:white;padding:12px 16px;border-radius:12px;box-shadow:0 8px 30px #0008;z-index:10;max-width:90vw}
+@media(min-width:700px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}.layout{display:grid;grid-template-columns:360px 1fr;gap:16px;align-items:start}.fieldgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.stat-value{font-size:25px}}
+</style>
+</head>
+<body>
+<header><div class="brand">YOUR BUSINESS • YOUR CONTROL</div><div class="title">RAVIYA <span style="color:var(--cyan)">ACCOUNT STORE</span></div><div class="subtitle">Customer records · Pending payments · Sales tracker</div></header>
+<main>
+ <section class="stats">
+  <div class="card"><div class="stat-label">TOTAL SALES VALUE</div><div id="totalSales" class="stat-value blue">Rs. 0</div></div>
+  <div class="card"><div class="stat-label">TOTAL RECEIVED</div><div id="totalReceived" class="stat-value green">Rs. 0</div></div>
+  <div class="card"><div class="stat-label">PENDING PAYMENTS</div><div id="totalPending" class="stat-value red">Rs. 0</div></div>
+  <div class="card"><div class="stat-label">CUSTOMERS / ACCOUNTS</div><div id="totalCustomers" class="stat-value">0</div></div>
+ </section>
+ <div class="toolbar">
+  <button class="btn primary" id="newBtn">＋ Add customer / sale</button>
+  <button class="btn" id="exportBtn">Export backup</button>
+  <button class="btn" id="importBtn">Import backup</button>
+  <button class="btn" id="installBtn" hidden>Install app</button>
+  <input type="file" id="importFile" accept="application/json" hidden>
+ </div>
+ <div class="layout">
+  <section class="section" id="formSection">
+   <div class="section-head"><h2 id="formTitle">Add customer / sale</h2><button class="btn small" id="cancelEdit">Clear</button></div>
+   <form id="customerForm">
+    <input type="hidden" id="editId">
+    <div class="fieldgrid">
+     <div class="field"><label for="name">Customer name *</label><input id="name" required maxlength="80" placeholder="Customer name"></div>
+     <div class="field"><label for="phone">WhatsApp / phone</label><input id="phone" inputmode="tel" maxlength="30" placeholder="07X XXX XXXX"></div>
+     <div class="field full"><label for="account">Account details / UID</label><input id="account" maxlength="160" placeholder="Free Fire UID, account notes"></div>
+     <div class="field"><label for="price">Full price (Rs.) *</label><input id="price" type="number" min="0" step="0.01" required placeholder="34000"></div>
+     <div class="field"><label for="paid">Amount received (Rs.) *</label><input id="paid" type="number" min="0" step="0.01" required value="0" placeholder="14000"></div>
+     <div class="field"><label for="due">Payment due date</label><input id="due" type="date"></div>
+     <div class="field"><label for="status">Sale status</label><select id="status"><option>Pending</option><option>Completed</option><option>On hold</option><option>Cancelled</option></select></div>
+     <div class="field full"><label for="notes">Notes</label><textarea id="notes" rows="2" maxlength="500" placeholder="Payment plan, agreed dates, other details"></textarea></div>
+    </div>
+    <div class="actions"><button class="btn primary" type="submit">Save record</button><button class="btn" type="button" id="cancelBtn">Cancel</button></div>
+    <p class="note">Remaining balance is calculated automatically. Keep an exported backup somewhere safe.</p>
+   </form>
+  </section>
+  <section class="section">
+   <div class="section-head"><h2>Customers & payments</h2><span id="recordCount" class="muted">0 records</span></div>
+   <div class="searchrow"><input id="search" placeholder="Search name, phone or UID…"><select id="filter" style="max-width:145px"><option value="all">All records</option><option value="pending">Pending</option><option value="paid">Fully paid</option><option value="overdue">Overdue</option></select></div>
+   <div id="customerList"></div>
+  </section>
+ </div>
+ <section class="section"><h2>Data & privacy</h2><p class="note">This first version stores records in this browser on this device. It does not require a password, and it does not automatically sync to another phone or PC. Clearing browser data can erase records, so use “Export backup” regularly and import that file on another device if needed. Do not store passwords or sensitive account login details here.</p></section>
+</main>
+<footer>RAVIYA ACCOUNT STORE · Management app</footer>
+<div id="toast" class="toast hidden" role="status"></div>
+<script>
+const $=id=>document.getElementById(id);
+const KEY='raviya_account_store_records_v1';
+let records=[];
+try{records=JSON.parse(localStorage.getItem(KEY)||'[]');if(!Array.isArray(records))records=[]}catch{records=[]}
+let installPrompt=null;
+const money=n=>'Rs. '+Number(n||0).toLocaleString('en-LK',{maximumFractionDigits:2});
+const remaining=r=>Math.max(0,Number(r.price||0)-Number(r.paid||0));
+const today=()=>new Date().toISOString().slice(0,10);
+function persist(){localStorage.setItem(KEY,JSON.stringify(records));render()}
+function toast(msg){$('toast').textContent=msg;$('toast').classList.remove('hidden');setTimeout(()=>$('toast').classList.add('hidden'),2600)}
+function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function render(){
+ const sales=records.filter(r=>r.status!=='Cancelled').reduce((s,r)=>s+Number(r.price||0),0);
+ const received=records.reduce((s,r)=>s+Number(r.paid||0),0);
+ const pending=records.filter(r=>r.status!=='Cancelled').reduce((s,r)=>s+remaining(r),0);
+ $('totalSales').textContent=money(sales);$('totalReceived').textContent=money(received);$('totalPending').textContent=money(pending);$('totalCustomers').textContent=records.length;
+ const q=$('search').value.toLowerCase().trim(),f=$('filter').value;
+ const list=records.filter(r=>{
+  const text=[r.name,r.phone,r.account,r.notes].join(' ').toLowerCase();
+  const isPaid=remaining(r)===0;
+  const overdue=remaining(r)>0&&r.due&&r.due<today();
+  return (!q||text.includes(q))&&(f==='all'||(f==='pending'&&remaining(r)>0&&r.status!=='Cancelled')||(f==='paid'&&isPaid)||(f==='overdue'&&overdue));
+ }).sort((a,b)=>(a.due||'9999').localeCompare(b.due||'9999'));
+ $('recordCount').textContent=list.length+' record'+(list.length===1?'':'s');
+ if(!list.length){$('customerList').innerHTML='<div class="empty">No records found.<br>Add your first customer or sale above.</div>';return}
+ $('customerList').innerHTML=list.map(r=>{
+  const bal=remaining(r),paid=bal===0,overdue=bal>0&&r.due&&r.due<today();
+  return `<article class="customer">
+   <div class="customer-top"><div><div class="customer-name">${safe(r.name)}</div><div class="muted">${safe(r.phone||'No phone')} · ${safe(r.account||'No account details')}</div></div><span class="badge ${paid?'paid':'pending'}">${paid?'PAID':overdue?'OVERDUE':safe(r.status==='On hold'?'ON HOLD':r.status==='Cancelled'?'CANCELLED':'PENDING')}</span></div>
+   <div class="moneygrid"><div class="moneybox"><span>FULL PRICE</span><strong>${money(r.price)}</strong></div><div class="moneybox"><span>RECEIVED</span><strong>${money(r.paid)}</strong></div><div class="moneybox"><span>REMAINING</span><strong style="color:${bal?'var(--red)':'var(--green)'}">${money(bal)}</strong></div></div>
+   <div class="muted">Due: ${safe(r.due||'Not set')} · Added: ${safe(r.created||'')}</div>
+   ${r.notes?`<p class="note">${safe(r.notes)}</p>`:''}
+   <div class="actions"><button class="btn small primary" onclick="editRecord('${r.id}')">Edit</button>${bal>0?`<button class="btn small" onclick="addPayment('${r.id}')">＋ Add payment</button>`:''}<button class="btn small" onclick="whatsapp('${r.id}')">WhatsApp reminder</button><button class="btn small danger" onclick="deleteRecord('${r.id}')">Delete</button></div>
+  </article>`;
+ }).join('');
+}
+function resetForm(){ $('customerForm').reset();$('editId').value='';$('paid').value='0';$('formTitle').textContent='Add customer / sale'; }
+$('customerForm').addEventListener('submit',e=>{
+ e.preventDefault();
+ const price=Number($('price').value),paid=Number($('paid').value);
+ if(price<0||paid<0){toast('Amounts must be zero or more.');return}
+ if(paid>price&&!confirm('Received amount is higher than full price. Save anyway?'))return;
+ const id=$('editId').value||('r_'+Date.now()+'_'+Math.random().toString(36).slice(2,7));
+ const old=records.find(r=>r.id===id);
+ const r={id,name:$('name').value.trim(),phone:$('phone').value.trim(),account:$('account').value.trim(),price,paid,due:$('due').value,status:$('status').value,notes:$('notes').value.trim(),created:old?.created||today(),updated:today()};
+ if(!r.name){toast('Enter customer name.');return}
+ if(old)records=records.map(x=>x.id===id?r:x);else records.unshift(r);
+ persist();resetForm();toast('Record saved successfully.');
+});
+function editRecord(id){const r=records.find(x=>x.id===id);if(!r)return;$('editId').value=r.id;['name','phone','account','price','paid','due','status','notes'].forEach(k=>$(k).value=r[k]??(k==='paid'?'0':''));$('formTitle').textContent='Edit customer / sale';$('formSection').scrollIntoView({behavior:'smooth',block:'start'})}
+function addPayment(id){const r=records.find(x=>x.id===id);if(!r)return;const v=prompt('Enter new payment received (Rs.):');if(v===null)return;const n=Number(v);if(!Number.isFinite(n)||n<=0){toast('Enter a valid amount.');return}r.paid=Number(r.paid||0)+n;if(r.paid>=r.price)r.status='Completed';r.updated=today();persist();toast('Payment added.')}
+function deleteRecord(id){if(!confirm('Delete this customer record? This cannot be undone unless you have a backup.'))return;records=records.filter(r=>r.id!==id);persist();toast('Record deleted.')}
+function whatsapp(id){const r=records.find(x=>x.id===id);if(!r)return;if(!r.phone){toast('Add a phone number first.');return}const num=r.phone.replace(/\D/g,'').replace(/^0/,'94');const msg=`Hi ${r.name}, this is a payment reminder from RAVIYA ACCOUNT STORE. Remaining balance: ${money(remaining(r))}. Due date: ${r.due||'not set'}. Please contact us if you have any questions.`;window.open('https://wa.me/'+num+'?text='+encodeURIComponent(msg),'_blank','noopener')}
+$('cancelBtn').onclick=resetForm;$('cancelEdit').onclick=resetForm;$('newBtn').onclick=()=>{$('formSection').scrollIntoView({behavior:'smooth'});$('name').focus()};
+$('search').addEventListener('input',render);$('filter').addEventListener('change',render);
+$('exportBtn').onclick=()=>{const blob=new Blob([JSON.stringify({app:'RAVIYA ACCOUNT STORE',version:1,exportedAt:new Date().toISOString(),records},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='raviya-store-backup-'+today()+'.json';a.click();URL.revokeObjectURL(a.href);toast('Backup exported. Keep it safe.')};
+$('importBtn').onclick=()=>$('importFile').click();
+$('importFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const d=JSON.parse(await f.text());const incoming=Array.isArray(d)?d:d.records;if(!Array.isArray(incoming))throw Error();if(!confirm(`Import ${incoming.length} records? This replaces records currently saved on this device.`))return;records=incoming;persist();toast('Backup imported.');}catch{toast('That backup file could not be read.')}e.target.value=''};
+window.editRecord=editRecord;window.addPayment=addPayment;window.deleteRecord=deleteRecord;window.whatsapp=whatsapp;
+window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installPrompt=e;$('installBtn').hidden=false});
+$('installBtn').onclick=async()=>{if(!installPrompt){toast('On iPhone: open in Safari, tap Share, then Add to Home Screen.');return}installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;$('installBtn').hidden=true};
+if('serviceWorker' in navigator && location.protocol.startsWith('http'))window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+render();
+</script>
+</body>
+</html>
